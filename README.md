@@ -7,7 +7,7 @@
 <b>Team Members</b>
 <ul>
 	<li><a href="https://www.linkedin.com/in/greetsandeep/">G.V.Sandeep</a></li>
-	<li>Kushagra Agrawal</li>
+	<li><a href= "https://www.linkedin.com/in/kushagra-agrawal-b64962a7/">Kushagra Agrawal</a></li>
 	<li>Rajat Jain</li>
 	<li>Ayush Beria</li>
 </ul>
