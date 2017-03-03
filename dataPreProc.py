@@ -42,7 +42,7 @@ with open('sample.csv','rb') as readfile:
 
 		''' Pre Processing on Summary ''' 
 		try:
-			summary = row[1]
+			summary = row[1].strip()
 			data_row.append(summary)
 		except:
 			clean = 0
@@ -74,7 +74,7 @@ with open('sample.csv','rb') as readfile:
 
 		''' Pre Processing on Previous Appointment '''
 		try:
-			prev_appt = row[5]
+			prev_appt = row[5].upper()
 			data_row.append(prev_appt)
 		except:
 			clean = 0
@@ -88,11 +88,9 @@ with open('sample.csv','rb') as readfile:
 			clean = 0
 			print "Error In the Transaction ID in line number: ",line_num
 
-		
 		''' If no anamolies have been found in the data, add it to the final data to be considered ''' 
 		if clean == 1:	
 			final_data.append(data_row)
-
 
 ''' The final data with no anamolies'''
 print final_data
