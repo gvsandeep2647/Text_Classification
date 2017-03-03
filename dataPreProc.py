@@ -1,6 +1,6 @@
 """
   
-  Aim : To implement NLP and AI techniues to classify conversations into categories and sub-categories
+  Aim : To implement NLP and AI techniques to classify conversations into categories and sub-categories
   
   Instructor : Dr. Anand N.
   

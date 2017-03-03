@@ -41,4 +41,45 @@ def getNumSubCategory(sub_categories):
 	if sub_categories == "CANCELLATION":
 		return 1
 	elif sub_categories == "CHANGE OF HOSPITAL":
+		return 2
+	elif sub_categories == "CHANGE OF PHARMACY":
+		return 3
+	elif sub_categories == "CHANGE OF PROVIDER":
+		return 4
+	elif sub_categories == "FOLLOW UP ON PREVIOUS REQUEST":
+		return 5
+	elif sub_categories == "JUNK":
+		return 6
+	elif sub_categories == "LAB RESULTS":
+		return 7
+	elif sub_categories == "MEDICATION RELATED":
+		return 8
+	elif sub_categories == "NEW APPOINTMENT":
+		return 9
+	elif sub_categories == "OTHERS":
+		return 10
+	elif sub_categories == "PRIOR AUTHORIZATION":
+		return 11
+	elif sub_categories == "PROVIDER":
+		return 12
+	elif sub_categories == "QUERIES FROM INSURANCE FIRM":
+		return 13
+	elif sub_categories == "QUERIES FROM PHARMACY":
+		return 14
+	elif sub_categories == "QUERY ON CURRENT APPOINTMENT":
+		return 15
+	elif sub_categories == "REFILL":
+		return 16
+	elif sub_categories == "RESCHEDULING":
+		return 17
+	elif sub_categories == "RUNNING LATE TO APPOINTMENT":
+		return 18
+	elif sub_categories == "SHARING OF HEALTH RECORDS (FAX, E-MAIL, ETC.)":
+		return 19
+	elif sub_categories == "SHARING OF LAB RECORDS (FAX, E-MAIL, ETC.)":
+		return 20
+	elif sub_categories == "SYMPTOMS":
+		return 21
+	else:
+		return -1
 		# Some one please complete this
