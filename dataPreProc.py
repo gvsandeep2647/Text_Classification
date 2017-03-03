@@ -25,14 +25,14 @@ with open('sample.csv','rb') as readfile:
 		3. The final data which will not comprise of all these anamolies will be stored in final_data array and this data will be used for further proceedings.
 
 	'''
-	reader = csv.reader(readfile, skipinitialspace=False,delimiter=',', quoting=csv.QUOTE_NONE)
+	reader = csv.reader(readfile, skipinitialspace=False,delimiter=',',quoting=csv.QUOTE_MINIMAL)
 	line_num = 0
 
 	for row in reader:
 		clean = 1 # to check whether the row currently under consideration is free of anamolies or not
 		line_num = line_num + 1
 		data_row = []
-		
+
 		''' Ensuring all the File IDs are integers '''
 		try:
 			data_row.append(int(row[0]))
@@ -82,12 +82,13 @@ with open('sample.csv','rb') as readfile:
 
 		''' Pre Processing on transaction ID. Eliminating Underscores and making it one digit. Do we really need this data? '''
 		try:
-			trans_id = row[6]
+			trans_id = int(row[6].replace("_",""))
 			data_row.append(trans_id)
 		except:
 			clean = 0
 			print "Error In the Transaction ID in line number: ",line_num
 
+		
 		''' If no anamolies have been found in the data, add it to the final data to be considered ''' 
 		if clean == 1:	
 			final_data.append(data_row)
