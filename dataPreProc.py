@@ -60,7 +60,7 @@ with open(INPUT_FILE,'rb') as readfile:
 			
 			''' Pre Processing on Call Data '''
 			try:
-				call_data = row[2]
+				call_data = sanitize(row[2])
 				data_row.append(call_data)
 			except:
 				clean = 0
@@ -76,7 +76,7 @@ with open(INPUT_FILE,'rb') as readfile:
 
 			''' Pre Processing on Sub Categories. Assigning All the Possible Sub Categories with a number '''
 			try:
-				sub_categories = row[4]
+				sub_categories = getNumSubCategory(row[4])
 				data_row.append(sub_categories)
 			except:
 				clean = 0

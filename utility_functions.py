@@ -82,4 +82,10 @@ def getNumSubCategory(sub_categories):
 		return 21
 	else:
 		return -1
-		# Some one please complete this
+
+def sanitize(call_data):
+	call_data = call_data.split()
+	
+	''' Removing Empty Elements ''' 
+	call_data = [x for x in call_data if x != '']	
+	return call_data
