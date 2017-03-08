@@ -86,6 +86,13 @@ def getNumSubCategory(sub_categories):
 def sanitize(call_data):
 	call_data = call_data.split()
 	
-	''' Removing Empty Elements ''' 
+	''' 
+	Removing Empty Elements and all the unnecessary elements. *Debatable*
+	Storing the cleaned string back into a file specfied at the compile time
+
+	''' 
+
 	call_data = [x for x in call_data if x != '']	
+	call_data = [x for x in call_data if "\\" not in x ]
+	call_data = ' '.join(call_data)
 	return call_data
