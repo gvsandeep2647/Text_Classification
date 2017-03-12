@@ -41,6 +41,8 @@ with open(INPUT_FILE,'rb') as readfile:
 		for row in reader:
 			clean = 1 # to check whether the row currently under consideration is free of anamolies or not
 			line_num = line_num + 1
+			if line_num == 1:
+				continue
 			data_row = []
 
 			''' Ensuring all the File IDs are integers '''
@@ -69,6 +71,9 @@ with open(INPUT_FILE,'rb') as readfile:
 			''' Pre Processing on Categories. Assigning All the Possible Categories with a number '''
 			try:
 				categories = getNumCategory(row[3])
+				if categories == -1:
+					clear = 0
+					print "Format Error in Categories at line num: ",line_num
 				data_row.append(categories)
 			except:
 				clean = 0
@@ -77,6 +82,9 @@ with open(INPUT_FILE,'rb') as readfile:
 			''' Pre Processing on Sub Categories. Assigning All the Possible Sub Categories with a number '''
 			try:
 				sub_categories = getNumSubCategory(row[4])
+				if sub_categories == -1:
+					clear = 0
+					print "Format Error in Sub Categories at line num: ",line_num
 				data_row.append(sub_categories)
 			except:
 				clean = 0
@@ -85,6 +93,9 @@ with open(INPUT_FILE,'rb') as readfile:
 			''' Pre Processing on Previous Appointment '''
 			try:
 				prev_appt = getNumPrevAppt(row[5].upper())
+				if prev_appt == -1:
+					clear = 0
+					print "Format Error in Prev Appt at line num: ",line_num
 				data_row.append(prev_appt)
 			except:
 				clean = 0

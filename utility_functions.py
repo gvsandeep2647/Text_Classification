@@ -16,7 +16,7 @@ def getNumCategory(category):
 	'''
 	Assign numeric value to the field : "Category"	
 	'''
-
+	category = category.upper()
 	if category == "APPOINTMENTS":
 		return 1
 	elif category == "ASK_A_DOCTOR":
@@ -37,7 +37,7 @@ def getNumSubCategory(sub_categories):
 	'''
 	Assign numeric value to the field : "Sub Category"	
 	'''
-
+	sub_categories = sub_categories.upper()
 	if sub_categories == "CANCELLATION":
 		return 1
 	elif sub_categories == "CHANGE OF HOSPITAL":
