@@ -100,6 +100,17 @@ def sanitize(call_data):
 	return call_data
 
 def genTrainAndTest(data_file,train_file,test_file):
+	
+	'''
+	This function takes as an input the following three files: 
+	1. data_file : which contains the data
+	2. train_file : The file which shall contain the training data and only relevant fields
+	3. test_file : The file which shall contain the test data and only relevant fields
+
+	Approximately 70% of data is choosen as the training data. This data is selected randomly
+	The Remaining data is treated as test_data
+	'''
+	
 	with open(data_file,'rb') as dataFile:
 		with open(train_file,'w') as trainFile:
 			with open(test_file,'w') as testFile:
@@ -113,7 +124,6 @@ def genTrainAndTest(data_file,train_file,test_file):
 					data_row.append(row[3])
 					data_row.append(row[4])
 					data_row.append(row[5])
-					print data_row
 					if int(np.random.choice([0,1],1,p=[0.3,0.7])) == 1:
 						writer1.writerow(data_row)
 					else:
