@@ -24,14 +24,13 @@ INPUT_FILE = sys.argv[1]
 OUTPUT_FILE = sys.argv[2]
 
 
-final_data = []
 with open(INPUT_FILE,'rb') as readfile:
 	with open(OUTPUT_FILE,'w') as writefile:
 		'''
 			To iterate through the data and find anamolies if they exist such as :
 			1. Missing Data
 			2. Data Fields which do not follow the desired Format etc.
-			3. The final data which will not comprise of all these anamolies will be stored in final_data array and this data will be used for further proceedings.
+			3. The final data which will not comprise of all these anamolies will be stored in the OUTPUT_FILE and this data will be used for further proceedings.
 
 		'''
 		reader = csv.reader(readfile, skipinitialspace=False,delimiter=',',quoting=csv.QUOTE_MINIMAL)
@@ -41,8 +40,6 @@ with open(INPUT_FILE,'rb') as readfile:
 		for row in reader:
 			clean = 1 # to check whether the row currently under consideration is free of anamolies or not
 			line_num = line_num + 1
-			if line_num == 1:
-				continue
 			data_row = []
 
 			''' Ensuring all the File IDs are integers '''
@@ -112,6 +109,3 @@ with open(INPUT_FILE,'rb') as readfile:
 			''' If no anamolies have been found in the data, add it to the final data to be considered ''' 
 			if clean == 1:	
 				writer.writerow(data_row)
-
-''' The final data with no anamolies'''
-#print final_data

@@ -1,3 +1,5 @@
+import csv
+import numpy as np
 def getNumPrevAppt(prev_appt):
 	
 	'''
@@ -96,3 +98,23 @@ def sanitize(call_data):
 	call_data = [x for x in call_data if "\\" not in x ]
 	call_data = ' '.join(call_data)
 	return call_data
+
+def genTrainAndTest(data_file,train_file,test_file):
+	with open(data_file,'rb') as dataFile:
+		with open(train_file,'w') as trainFile:
+			with open(test_file,'w') as testFile:
+				reader  = csv.reader(dataFile, skipinitialspace=False,delimiter=',',quoting=csv.QUOTE_MINIMAL)
+				writer1 = csv.writer(trainFile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+				writer2 = csv.writer(testFile,delimiter=',',quoting=csv.QUOTE_MINIMAL)
+				flag = 0
+				for row in reader:
+					data_row = []
+					data_row.append(row[2])
+					data_row.append(row[3])
+					data_row.append(row[4])
+					data_row.append(row[5])
+					print data_row
+					if int(np.random.choice([0,1],1,p=[0.3,0.7])) == 1:
+						writer1.writerow(data_row)
+					else:
+						writer2.writerow(data_row)
