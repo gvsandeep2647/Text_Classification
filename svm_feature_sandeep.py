@@ -1,7 +1,10 @@
 import sys
 import re
+import time
+import numpy as np
 from utility_functions import *
 from stemming import *
+from scipy import sparse
 from nltk.corpus import stopwords 
 
 PS = PorterStemmer()
@@ -10,6 +13,24 @@ TRAIN_FILE = sys.argv[2]
 TEST_FILE = sys.argv[3]
 
 VOCABULARY = {}
+MATRIX = []
+
+def genMatrix(data):
+	num_lines = sum(1 for line in open(data)) # To count the number of lines
+	global VOCABULARY
+	matrix = [None]*num_lines
+	with open(data,'rb') as readfile:
+		reader = csv.reader(readfile, skipinitialspace=False,delimiter=',',quoting=csv.QUOTE_MINIMAL)
+		line_num = 0
+		for row in reader:
+			vector = [0]*len(VOCABULARY)
+			for item in normalizer(row[0].split()):
+				vector[int(VOCABULARY[item])] = 1
+			matrix[line_num] = vector
+			line_num = line_num + 1
+
+	matrix = sparse.csr_matrix(np.array(matrix))
+	return matrix
 
 def normalizer(l):
 	stop = set(stopwords.words('english'))
@@ -37,7 +58,10 @@ def genVocabulary(data):
 		vocabulary[vocab[i]] = i
 	VOCABULARY = vocabulary
 
-
+start_time = time.time()
 genTrainAndTest(DATA_FILE,TRAIN_FILE,TEST_FILE)
 genVocabulary(DATA_FILE)
-genVectors()
+
+print "--- %s minutes ---" % (time.time() - start_time)
+MATRIX = genMatrix(TRAIN_FILE)
+print MATRIX.getnnz()
