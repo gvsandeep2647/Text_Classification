@@ -6,13 +6,15 @@ from utility_functions import *
 from stemming import *
 from scipy import sparse
 from nltk.corpus import stopwords 
+from collections import Counter
 
 PS = PorterStemmer()
 DATA_FILE = sys.argv[1]
 TRAIN_FILE = sys.argv[2]
 TEST_FILE = sys.argv[3]
 
-VOCABULARY = {}
+PRETFIDF = {}
+VOCABULARY = []
 MATRIX = []
 
 def genMatrix(data):
@@ -20,17 +22,16 @@ def genMatrix(data):
 	global VOCABULARY
 	matrix = [None]*num_lines
 	with open(data,'rb') as readfile:
-		reader = csv.reader(readfile, skipinitialspace=False,delimiter=',',quoting=csv.QUOTE_MINIMAL)
-		line_num = 0
-		for row in reader:
-			vector = [0]*len(VOCABULARY)
-			for item in normalizer(row[0].split()):
-				vector[int(VOCABULARY[item])] = 1
-			matrix[line_num] = vector
-			line_num = line_num + 1
-
-	matrix = sparse.csr_matrix(np.array(matrix))
-	return matrix
+		with open("binary_"+data,'w') as writefile:
+			reader = csv.reader(readfile, skipinitialspace=False,delimiter=',',quoting=csv.QUOTE_MINIMAL)
+			writer = csv.writer(writefile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+			line_num = 0
+			for row in reader:
+				vector = [False]*len(VOCABULARY)
+				for item in normalizer(row[0].split()):
+					vector[int(VOCABULARY[item])] = True
+				writer.writerow(vector)
+				line_num = line_num + 1
 
 def normalizer(l):
 	stop = set(stopwords.words('english'))
@@ -43,25 +44,37 @@ def normalizer(l):
 
 	return l
 
-def genVocabulary(data):
+def genVocabulary():
 
-	global VOCABULARY
+	global VOCABULARY,DATA_FILE
 	vocabulary = []
-	with open(data,'rb') as readfile:
+	with open(DATA_FILE,'rb') as readfile:
 		reader = csv.reader(readfile, skipinitialspace=False,delimiter=',',quoting=csv.QUOTE_MINIMAL)
 		for row in reader:
 			vocabulary.extend(normalizer(row[2].split()))
 
-	vocab = list(set(vocabulary))
-	vocabulary = {}
-	for i in xrange(len(vocab)):
-		vocabulary[vocab[i]] = i
-	VOCABULARY = vocabulary
+	VOCABULARY = list(set(vocabulary))
+
+def indexing():
+
+	global VOCABULARY,DATA_FILE,PRETFIDF
+	with open(DATA_FILE,'rb') as readfile:
+		reader = csv.reader(readfile, skipinitialspace=False,delimiter=',',quoting=csv.QUOTE_MINIMAL)
+		line_num = 0
+		for row in reader:
+			line_num = line_num + 1
+			print line_num
+			for word in normalizer(row[2].split()):
+				if word in PRETFIDF:
+					if {line_num:normalizer(row[2].split()).count(word)} not in PRETFIDF[word]:
+						PRETFIDF[word].append({line_num:normalizer(row[2].split()).count(word)})
+				else:
+					PRETFIDF[word] = []
+					PRETFIDF[word].append({line_num:normalizer(row[2].split()).count(word)})
 
 start_time = time.time()
-genTrainAndTest(DATA_FILE,TRAIN_FILE,TEST_FILE)
-genVocabulary(DATA_FILE)
-
-print "--- %s minutes ---" % (time.time() - start_time)
-MATRIX = genMatrix(TRAIN_FILE)
-print MATRIX.getnnz()
+# genVocabulary()
+indexing()
+print PRETFIDF
+# genMatrix(DATA_FILE)
+print "--- %s seconds ---" % (time.time() - start_time)
