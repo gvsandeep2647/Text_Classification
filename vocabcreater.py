@@ -85,7 +85,7 @@ for content in data:
                 if "xxx" not in word:
                     word = word.encode("utf-8")
                     vocabulary.append(word)
-
+#print Id
 #print vocabulary
 
 

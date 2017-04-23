@@ -123,4 +123,5 @@ for item in category:
 	if category[i] == item:
 	    CountOnVocab(content)
 
+print data, category
 
