@@ -11,11 +11,11 @@ from collections import Counter
 from math import log, pow, sqrt
 import numpy as np
 from sklearn.svm import SVC
+import progressbar
+from sklearn.decomposition import TruncatedSVD
 
 PS = PorterStemmer()
 DATA_FILE = sys.argv[1]
-TRAIN_FILE = sys.argv[2]
-TEST_FILE = sys.argv[3]
 
 PRETFIDF = {}
 VOCABULARY = {}
@@ -61,10 +61,10 @@ def indexing():
 	global VOCABULARY,DATA_FILE,PRETFIDF,line_num
 	with open(DATA_FILE,'rb') as readfile:
 		reader = csv.reader(readfile, skipinitialspace=False,delimiter=',',quoting=csv.QUOTE_MINIMAL)
-		
+		bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength)
 		for row in reader:
 			line_num = line_num + 1
-			print line_num
+			bar.update(line_num)
 			for word in normalizer(row[2].split()):
 				if word in PRETFIDF:
 					if {line_num:normalizer(row[2].split()).count(word)} not in PRETFIDF[word]:
@@ -138,6 +138,42 @@ for i in xrange(len(res_subcateg)):
 
 
 print "Accuracy in Sub - Categories: ", ((float)(correct)/total)*100 ," %"
+
+print "\n\n**** REDUCING DIMESIONS TO HALF ****\n\n"
+
+MATRIX = np.array(MATRIX)
+n_components = (int)(MATRIX.shape[1]*0.5)
+pca = TruncatedSVD(n_components)
+MATRIX = pca.fit_transform(MATRIX)
+
+TRAIN = MATRIX[0:(int)(0.7*len(MATRIX))]
+TEST = MATRIX[(int)(0.7*len(MATRIX)):]
+
+clf.fit(np.array(TRAIN),np.array(TRAIN_CATEG))
+
+total = 0 
+correct = 0
+
+res_categ = clf.predict(TEST)
+for i in xrange(len(res_categ)):
+	total = total + 1
+	if res_categ[i] == TEST_CATEG[i]:
+		correct = correct + 1
+print "(Dim) Accuracy in Categories: ", ((float)(correct)/total)*100 ," %"
+
+
+clf.fit(np.array(TRAIN),np.array(TRAIN_SUBCATEG))
+total = 0 
+correct = 0
+
+res_subcateg = clf.predict(TEST)
+for i in xrange(len(res_subcateg)):
+	total = total + 1
+	if res_subcateg[i] == TEST_SUBCATEG[i]:
+		correct = correct + 1
+
+
+print "(Dim) Accuracy in Sub - Categories: ", ((float)(correct)/total)*100 ," %"
 
 
 print "--- %s seconds ---" % (time.time() - start_time)
