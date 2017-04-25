@@ -7,6 +7,7 @@ ultradata = []
 ultraCategories = []
 tf_data = {}
 idf_data = {}
+tf_idf_data = {}
 
 def make_unique(l):
 	'''
@@ -25,8 +26,8 @@ def index1(l,d,k):
 	occurences = {}
 	for word in l:
 		d = {}
-		for i in xrange(len(data)):
-			temp2 = wordpunct_tokenize(data[i])
+		for i in range(1,len(data)):
+			temp2 = wordpunct_tokenize(data[category[i]])
 			#print temp2
 			count = 0
 			for word2 in temp2:
@@ -34,7 +35,7 @@ def index1(l,d,k):
 					count = count + 1
 			#print temp
 			if count:
-				d[i] = count 
+				d[category[i]] = count 
 		if d:
 			occurences[word] = d
 	#print occurences
@@ -54,12 +55,18 @@ def calc_tf_idf(tf,idf,org,N):
 			else:
 				raw_tf[doc_key] = 0
 		tf[key] = raw_tf
-	#print tf
+	for key,val in tf.iteritems():
+		for key2 in idf.iteritems():
+			if key == key2:
+				for doc_key in val.iteritems():
+					tf_idf_data[key][doc_key] = tf_data[key][doc_key] * idf_data[key2]
+		
+	
 
 def normalize_doc():
-	for i in xrange(len(data)):
+	for i in range(1,len(data)):
 		temp =[]
-		temp2 = wordpunct_tokenize(data[i])
+		temp2 = wordpunct_tokenize(data[category[i]])
 		l=0.0
 		for word in temp2:
 			if word not in temp:
@@ -68,13 +75,13 @@ def normalize_doc():
 		for word in temp:
 			if word in tf_data:
 				if i in tf_data[word]:
-					l = l + pow(tf_data[word][i],2)
+					l = l + pow(tf_data[word][category[i]],2)
 			
 		l = sqrt(l)
 		for word in temp:
 			if word in tf_data:
 				if i in tf_data[word]:
-					tf_data[word][i] /= l
+					tf_data[word][category[i]] /= l
 			
 
 ultralist = pd.read_csv('SampleForNaive.csv')
@@ -88,8 +95,8 @@ ultradata = vocabulary
 dictdata = {}
 dictdata = index1(ultradata,dictdata,1)
 
-ultraCategories = make_unique(ultraCategories)
 calc_tf_idf(tf_data,idf_data,dictdata,len(data))
+
 normalize_doc()
-print tf_data
+print tf_idf_data
 
