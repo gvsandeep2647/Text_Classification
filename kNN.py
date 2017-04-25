@@ -1,7 +1,7 @@
 import pandas as pd
 from vocabcreater import vocabulary
 from math import log,sqrt
-#from nltk.tokenize import
+from nltk.tokenize import wordpunct_tokenize
 
 ultradata = []
 ultraCategories = []
@@ -26,7 +26,7 @@ def index1(l,d,k):
 	for word in l:
 		d = {}
 		for i in xrange(len(data)):
-			temp2 = data[i].split()
+			temp2 = wordpunct_tokenize(data[i])
 			#print temp2
 			count = 0
 			for word2 in temp2:
@@ -35,8 +35,8 @@ def index1(l,d,k):
 			#print temp
 			if count:
 				d[i] = count 
-			
-		occurences[word] = d
+		if d:
+			occurences[word] = d
 	#print occurences
 	return occurences
 
@@ -54,25 +54,29 @@ def calc_tf_idf(tf,idf,org,N):
 			else:
 				raw_tf[doc_key] = 0
 		tf[key] = raw_tf
-		#print tf
+	#print tf
 
 def normalize_doc():
 	for i in xrange(len(data)):
 		temp =[]
-		temp2 = data[i].split()
+		temp2 = wordpunct_tokenize(data[i])
 		l=0.0
 		for word in temp2:
 			if word not in temp:
 				temp.append(word)
-		#print temp
+		
 		for word in temp:
-			#if tf_data[word][i] > 0:
-			l = l + tf_data[word][i]
-			print tf_data[word][i]
+			if word in tf_data:
+				if i in tf_data[word]:
+					l = l + pow(tf_data[word][i],2)
+			
 		l = sqrt(l)
 		for word in temp:
-			tf_data[word][i] /= l
-			print tf_data[word][i]
+			if word in tf_data:
+				if i in tf_data[word]:
+					tf_data[word][i] /= l
+			
+
 ultralist = pd.read_csv('SampleForNaive.csv')
 vocablength=len(vocabulary) #no. of words in vocabulary
 Id = list(ultralist.id.unique())
@@ -87,5 +91,5 @@ dictdata = index1(ultradata,dictdata,1)
 ultraCategories = make_unique(ultraCategories)
 calc_tf_idf(tf_data,idf_data,dictdata,len(data))
 normalize_doc()
-#print tf_data
+print tf_data
 
