@@ -1,8 +1,11 @@
 import pandas as pd
 from vocabcreater import vocabulary
+from math import log
 
 ultradata = []
 ultraCategories = []
+tf_data = {}
+idf_data = {}
 
 def make_unique(l):
 	'''
@@ -21,13 +24,31 @@ def index1(l,d,k):
 	occurences = {}
 	for word in l:
 		d = {}
-		for i in xrange(len(ultralist)):
-			temp = [j for j,val in enumerate(data[i][k]) if val==word]
-			if temp :
-				d[i] = temp
+		for i in xrange(len(data)):
+			temp2 = data[i].split()
+			
+			count = 0
+			for word2 in temp2:
+				if word2 == word:
+					count = count + 1
+			#print temp
+			if count:
+				d[i] = count 
 		occurences[word] = d
-	
+	#print occurences
 	return occurences
+
+def calc_tf_idf(tf,idf,org,N):
+	for key,val in org.iteritems():
+		raw_tf = {}
+		idf[key] = (log((float(N)/len(val.keys())),10))
+		for doc_key,doc_val in val.iteritems():
+			if doc_val>0:
+				raw_tf[doc_key] = 1 + log(doc_val,10)
+			else:
+				raw_tf[doc_key] = 0
+		tf[key] = raw_tf
+		print idf
 
 
 ultralist = pd.read_csv('SampleForNaive.csv')
@@ -35,13 +56,12 @@ vocablength=len(vocabulary) #no. of words in vocabulary
 Id = list(ultralist.id.unique())
 data = ultralist['data'].tolist()
 category = ultralist['class'].tolist()
-#print data[0]
-#print category
-#print category
+
 ultradata = make_unique(vocabulary)
+
 dictdata = {}
 dictdata = index1(ultradata,dictdata,1)
-print dictdata
+
 ultraCategories = make_unique(ultraCategories)
-#print vocabulary
+calc_tf_idf(tf_data,idf_data,dictdata,len(data))
 
