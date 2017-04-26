@@ -17,18 +17,19 @@ import math
 
 
 def createTokens(content):
-    content=content.decode('utf-8','ignore').lower()
-    tok=wordpunct_tokenize(content)
-    tok.sort()
-    tokens=[]
-    for word in tok:
-        word=word.encode('utf-8','ignore')
-        if word not in stop:
-            if re.match('[a-z]{2}',word ):
-                word = unicode(word, 'utf-8')
-                tokens.append(word)
+	#print type(content)
+	content=content.decode('utf-8','ignore').lower()
+	tok=wordpunct_tokenize(content)
+	tok.sort()
+	tokens=[]
+	for word in tok:
+		word=word.encode('utf-8','ignore')
+		if word not in stop:
+			if re.match('[a-z]{2}',word ):
+				word = unicode(word, 'utf-8')
+				tokens.append(word)
                 #print word#.encode('utf-8','ignore')#.encode('cp850','replace').decode('cp850')
-    return tokens
+	return tokens
 
 
 def get_wordnet_pos(treebank_tag):
@@ -75,10 +76,13 @@ stop=set(stopwords.words('english'))
 d=pd.read_csv('SampleForNaive.csv')
 Id = list(d.id.unique())
 data = d['data'].tolist()
+#print data
 category = d['class'].tolist()
 vocabulary=[]
 for content in data:
+    #print type(content)
     newTokens=createVocabulary(content)
+    
     for word in newTokens:
         if word not in vocabulary:
             if len(word) > 3:
@@ -88,7 +92,23 @@ for content in data:
 #print Id
 #print vocabulary
 
-
+d2=pd.read_csv('test.csv')
+Id = list(d.id.unique())
+data1 = d2['data'].tolist()
+#print data
+category1 = d2['category'].tolist()
+vocabularyfortest=[]
+for content in data1:
+    #print type(content)
+    newTokens=createVocabulary(content)
+    
+    for word in newTokens:
+        if word not in vocabularyfortest:
+            if len(word) > 3:
+                if "xxx" not in word:
+                    word = word.encode("utf-8")
+                    vocabularyfortest.append(word)
+#print vocabularyfortest
 
 
 
