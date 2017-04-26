@@ -132,7 +132,7 @@ testdata = {}
 #testdata = index1(vocabularyfortest,testdata,data1,1)
 #print testdata
 '''
-	k = 3
+	k = 1
 '''
 
 for i in xrange(len(data1)):
