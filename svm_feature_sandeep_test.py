@@ -10,9 +10,12 @@ from nltk.corpus import stopwords
 from collections import Counter
 from math import log, pow, sqrt
 import numpy as np
+from sklearn import svm
 from sklearn.svm import SVC
 import progressbar
 from sklearn.decomposition import TruncatedSVD
+from keras.models import Sequential
+from keras.layers import Dense
 
 PS = PorterStemmer()
 DATA_FILE = sys.argv[1]
@@ -103,10 +106,6 @@ indexing()
 
 genMatrix(DATA_FILE)
 
-print "--- %s seconds  for PreProcessing ---" % (time.time() - start_time)
-
-start_time = time.time()
-
 TRAIN = MATRIX[0:(int)(0.7*len(MATRIX))]
 TEST = MATRIX[(int)(0.7*len(MATRIX)):]
 
@@ -115,7 +114,6 @@ TEST_CATEG = CATEGORY[(int)(0.7*len(CATEGORY)):]
 
 TRAIN_SUBCATEG = SUBCATEGORY[0:(int)(0.7*len(SUBCATEGORY))]
 TEST_SUBCATEG = SUBCATEGORY[(int)(0.7*len(SUBCATEGORY)):]
-
 
 clf = SVC()
 clf.fit(np.array(TRAIN),np.array(TRAIN_CATEG))
@@ -142,13 +140,49 @@ for i in xrange(len(res_subcateg)):
 		correct = correct + 1
 
 
+clf.fit(np.array(TRAIN),np.array(TRAIN_SUBCATEG))
+total = 0 
+correct = 0
+
+res_subcateg = clf.predict(TEST)
+for i in xrange(len(res_subcateg)):
+	total = total + 1
+	if res_subcateg[i] == TEST_SUBCATEG[i]:
+		correct = correct + 1
+
 print "Accuracy in Sub - Categories: ", ((float)(correct)/total)*100 ," %"
 
-print "--- %s seconds ---" % (time.time() - start_time)
+clf = svm.SVR()
+clf.fit(np.array(TRAIN),np.array(TRAIN_CATEG))
+
+total = 0 
+correct = 0
+
+res_categ = clf.predict(TEST)
+for i in xrange(len(res_categ)):
+	total = total + 1
+	if res_categ[i] == TEST_CATEG[i]:
+		correct = correct + 1
+print "Accuracy in Categories: ", ((float)(correct)/total)*100 ," %"
+
+numpy.random.seed(7)
+model = Sequential()
+model.add(Dense(12, input_dim=8, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(1, activation='sigmoid'))
+# Compile model
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+# Fit the model
+model.fit(X, Y, epochs=150, batch_size=10)
+# evaluate the model
+scores = model.evaluate(X, Y)
+print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 print "\n\n**** REDUCING DIMESIONS TO HALF ****\n\n"
 
-start_time = time.time()
+
+clf = SVC()
+
 MATRIX = np.array(MATRIX)
 n_components = (int)(MATRIX.shape[1]*0.5)
 pca = TruncatedSVD(n_components)
