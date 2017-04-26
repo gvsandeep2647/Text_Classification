@@ -17,7 +17,7 @@ def make_unique(l):
 	l = list(l)
 	return l
 
-def index1(l,d,k):
+def index1(l,d,data,k):
 	'''
 		Creates an inverted index.
 		It basically returns a dictionary with each key as a word
@@ -27,8 +27,8 @@ def index1(l,d,k):
 	for word in l:
 		d = {}
 		for i in range(1,len(data)):
-			temp2 = wordpunct_tokenize(data[category[i]])
-			#print temp2
+			temp2 = wordpunct_tokenize(data[i])
+			
 			count = 0
 			for word2 in temp2:
 				if word2 == word:
@@ -38,7 +38,7 @@ def index1(l,d,k):
 				d[category[i]] = count 
 		if d:
 			occurences[word] = d
-	#print occurences
+	
 	return occurences
 
 def calc_tf_idf(tf,idf,org,N):
@@ -55,18 +55,19 @@ def calc_tf_idf(tf,idf,org,N):
 			else:
 				raw_tf[doc_key] = 0
 		tf[key] = raw_tf
-	for key,val in tf.iteritems():
-		for key2 in idf.iteritems():
+	'''for key,val in tf.iteritems():
+		for key2 in idf.keys():
+			
 			if key == key2:
-				for doc_key in val.iteritems():
-					tf_idf_data[key][doc_key] = tf_data[key][doc_key] * idf_data[key2]
+				for doc_key in val.keys():
+					tf_idf_data[key][doc_key] = tf_data[key][doc_key] * idf_data[key2]'''
 		
 	
 
-def normalize_doc():
+def normalize_doc(data):
 	for i in range(1,len(data)):
 		temp =[]
-		temp2 = wordpunct_tokenize(data[category[i]])
+		temp2 = wordpunct_tokenize(data[i])
 		l=0.0
 		for word in temp2:
 			if word not in temp:
@@ -93,10 +94,33 @@ category = ultralist['class'].tolist()
 ultradata = vocabulary
 
 dictdata = {}
-dictdata = index1(ultradata,dictdata,1)
+dictdata = index1(ultradata,dictdata,data,1)
 
 calc_tf_idf(tf_data,idf_data,dictdata,len(data))
 
-normalize_doc()
-print tf_idf_data
+normalize_doc(data)
+print tf_data
+#print tf_idf_data
+
+
+'''
+	for test file
+	
+'''
+test_tf = {}
+test_idf = {}
+
+testfile = pd.read_csv('test.csv')
+testdata = testfile['data'].tolist()
+category = testfile['category'].tolist()
+#print testdata
+testdict = {}
+testdict = index1(ultradata,testdict,testdata,1)
+#print testdict
+calc_tf_idf(test_tf,test_idf,testdict,len(testdata))
+
+normalize_doc(testdata)
+
+#print test_tf
+
 
